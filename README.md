@@ -12,7 +12,9 @@ go to client dir and run this commands:
 1- npm init 
 2- npm i 
 
+******************************************************************************************
 npm run dev - to run client side, the client side will run in port 3000 - localhost 3000
+******************************************************************************************
 
 
 server side - using 
@@ -25,5 +27,8 @@ go to server dir and run this commands:
 1- npm init 
 2- npm i 
 
+******************************************************************************************
 npm start - to run server side, the server side will run in port 8000 - localhost 8000
+******************************************************************************************
+
 
