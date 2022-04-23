@@ -8,13 +8,13 @@ import {
   Tooltip,
 } from "recharts";
 
-
-const Graph = ({data})=>{
+// create graph component
+const Graph = ({terms})=>{
   return (
     <BarChart
       width={500}
       height={300}
-      data={data}
+      data={terms}
       margin={{
         top: 5,
         right: 30,

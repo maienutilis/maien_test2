@@ -4,79 +4,68 @@ import { useState, useEffect} from 'react';
 import axios from "axios";
 
 const Home = ()=>{
-    
-    const [terms, setTerms] = useState();
-    const [type, setType] = useState(0);
-    const [showGraph, setShowGraph] = useState(0);
-    const [data, setData] = useState();
+  const [terms, setTerms] = useState();
+  const [showGraph, setShowGraph] = useState(0);
+  const [types, setTypes] = useState();
+  const [selectedType, SetSelectedType] = useState();
 
-    const getTerms = async ()=>{
-      console.log ("Sdfdsf")
-      const { aaaaa } = await axios.get(`http://localhost:8000/api/terms`);
-      console.log (aaaaa);
-    }
-
-    useEffect( ()=>{
-        if (!terms){
-          getTerms();
-            const tt = [
-                { type:1, terms: ['bug','bug','book','cart','cart']},
-                { type:2, terms: ['bug','book','cart']}] 
-            
-            setTerms(tt);
-            setType(tt[0].type);
-        }
-    },[terms]);
-
-    // on click button ok show graph 
-    const showTermsGraph =()=>{ 
-      setShowGraph(1);
-      
-      let dataGraph = [];
-      let selectedType = []
-      
-      // find json type selected 
-      for (let i=0; i<terms.length; i++){
-        if (terms[i].type ==type){
-          selectedType = terms[i];
-        }
+  // function get all terms by type
+  // input selected type
+  const getTerms = async (typeNumber)=>{
+    try{
+      const result = await axios.get(`${process.env.NEXT_PUBLIC_API}/terms/${typeNumber}`);
+      const arrData = []
+      for (let key in result.data){
+        arrData.push({name:key , number: result.data[key]});
       }
-      
-      
-      // go over json type selected and count number of terms
-      // and create data array to display graph 
-      // example array [{name : book , number : 5}, {name: bug, number:1 }]
-      for (let i=0; i<selectedType.terms.length ; i++){  
-        let flag = false;
-        for (let j=0 ; j<dataGraph.length; j++){
-          if (dataGraph[j].name == selectedType.terms[i]){
-            dataGraph[j].number++;
-            flag = true;
-          }
-        }
-        if (!flag){
-          dataGraph.push({name:selectedType.terms[i] , number:1});
-        }
-      }
-      setData (dataGraph);
+      setTerms(arrData)
     }
-    
+    catch(err){
+      console.log (err)
+    }
+  }
 
-    // set type on select change
-    const changeValue = (e)=>{setType(e.target.value);}
+  // first get all types from DB 
+  // send get requset to server using axios to get
+  // all types from db and insert them into select option
+  const getTypes = async ()=>{
+    try{
+      const result = await axios.get(`${process.env.NEXT_PUBLIC_API}/types`);
+      // initialize first value of types
+      SetSelectedType(result.data[0])
+      setTypes(result.data)
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
 
-    return (
-        <>
+  // useEffect on types
+  useEffect( ()=>{ if (!types){ getTypes(); } },[types]);
 
-          <DrowDown 
-            terms = {terms}
-            showTermsGraph = {showTermsGraph}
-            changeValue = {changeValue}/>
+  // on click button ok show graph 
+  const showTermsGraph =()=>{
+    // call function get terms, send get request to backend and get 
+    // all terms with selected id from DB 
+    getTerms(selectedType) 
+    // flag to show graph
+    setShowGraph(1);
+  }
+  
+  // set type on select change
+  const changeValue = (e)=>{ SetSelectedType(e.target.value);}
 
-          {showGraph==1? (<Graph data={data}/>) : ("") }
-    </>
-    
-    );
+  return (
+      <>
+        <DrowDown 
+          types = {types}
+          showTermsGraph = {showTermsGraph}
+          changeValue = {changeValue}/>
+
+        {showGraph==1? (<Graph terms={terms}/>) : ("") }
+  </>
+  
+  );
 }
 
 export default Home; 

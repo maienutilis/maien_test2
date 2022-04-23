@@ -1,22 +1,26 @@
-const DrowDown = ({terms, showTermsGraph, changeValue})=>{
+const DrowDown = ({types, showTermsGraph, changeValue})=>{
+
+    const divStyle = {
+        marginTop: 10
+      };
+      
+
     return (
         <>
-            Select Type 
+            <div style={divStyle}>Select Type </div>
             <select id="terms" onChange={changeValue}>
                 {
-                    terms?
-                    (terms.map((term)=>{ 
-                        return(<option value={term.type}>{term.type}</option>);
+                    types?
+                    (types.map((type, index)=>{  
+                        return(<option key={index} value={type}>{type}</option>);
                     }))
                     :("")
                 }
-            </select>
-           
+            </select>           
             <button onClick={showTermsGraph}>Ok</button>
         </>
             
     );
 }
-
 
 export default DrowDown;

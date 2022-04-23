@@ -10,6 +10,5 @@ const dbConnect = mongoose
   .catch((err) => console.log("DB CONNECTION ERROR => ", err));
 
 
-const db = dbConnect.connection;
 
-export default db;
+export default dbConnect;

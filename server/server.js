@@ -1,39 +1,25 @@
 import express from "express";
 import cors from "cors";
 import { readdirSync } from "fs";
+require("dotenv").config();
 
-//const morgan = require("morgan");
-//require("dotenv").config();
+// connect to DB
+import db from "./db"
 
 const app = express();
-
-// db
-/*
-mongoose
-  .connect(process.env.DATABASE, {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
-  .then(() => console.log("DB connected"))
-  .catch((err) => console.log("DB CONNECTION ERROR => ", err));
-
-*/
-
 
 // middlewares
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [process.env.CLIENT_URL],
   })
 );
 
 // autoload routes
 readdirSync("./routes").map((r) => app.use("/api", require(`./routes/${r}`)));
 
-const port = 8000;
+const port = process.env.PORT;
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
